@@ -351,9 +351,14 @@ export class ClientBase {
     );
     const provider = createTwitterAuthProvider(this.runtime, this.state);
 
-    const maxRetries = process.env.MAX_RETRIES
+    const DEFAULT_MAX_RETRIES = 3;
+    const parsedMaxRetries = process.env.MAX_RETRIES
       ? parseInt(process.env.MAX_RETRIES, 10)
-      : 3;
+      : DEFAULT_MAX_RETRIES;
+    const maxRetries =
+      Number.isFinite(parsedMaxRetries) && parsedMaxRetries > 0
+        ? parsedMaxRetries
+        : DEFAULT_MAX_RETRIES;
     let retryCount = 0;
     let lastError: Error | null = null;
 
