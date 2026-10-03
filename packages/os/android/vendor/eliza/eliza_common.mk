@@ -28,33 +28,37 @@ PRODUCT_PACKAGES += \
     default-permissions-ai.elizaos.app.xml \
     privapp-permissions-ai.elizaos.app.xml
 
-# KNOWN GAP: `-=` is not a make (or kati) operator — this block is currently
-# a no-op that defines a stray variable, so none of these stock apps are
-# actually removed from any image. Even a working subtraction here could not
-# remove packages contributed by inherited makefiles (inherit-product
-# aggregation is deferred past this file's evaluation). Role/HOME defaults in
-# vendor/eliza/overlays keep Eliza in front regardless; the real de-bloat
-# needs a supported mechanism and boot-level verification. Tracked as a
-# follow-up; do not trust this list as a removal contract.
-PRODUCT_PACKAGES -= \
-    Browser2 \
-    Calendar \
-    Camera2 \
-    Contacts \
-    DeskClock \
-    Dialer \
-    Email \
-    Gallery2 \
-    Launcher3 \
-    Launcher3QuickStep \
-    ManagedProvisioning \
-    Messaging \
-    messaging \
-    Music \
-    Provision \
-    QuickSearchBox \
-    SetupWizard \
-    Trebuchet
+# KNOWN GAP: `-=` is not a make (or kati) operator, so this block does not
+# remove any of these stock apps from an image, and a working subtraction
+# here could not remove packages contributed by inherited makefiles either
+# (inherit-product aggregation is deferred past this file's evaluation).
+# Role/HOME defaults in vendor/eliza/overlays keep Eliza in front regardless;
+# the real de-bloat needs a supported mechanism and boot-level verification.
+# Tracked as a follow-up; do not trust this list as a removal contract.
+# Commented out (rather than left live) because an unrecognized assignment
+# operator makes plain GNU make abort the whole file with "missing
+# separator" instead of silently ignoring it — every PRODUCT_* variable
+# below this point, including BOARD_VENDOR_SEPOLICY_DIRS, would otherwise
+# never be evaluated.
+# PRODUCT_PACKAGES -= \
+#     Browser2 \
+#     Calendar \
+#     Camera2 \
+#     Contacts \
+#     DeskClock \
+#     Dialer \
+#     Email \
+#     Gallery2 \
+#     Launcher3 \
+#     Launcher3QuickStep \
+#     ManagedProvisioning \
+#     Messaging \
+#     messaging \
+#     Music \
+#     Provision \
+#     QuickSearchBox \
+#     SetupWizard \
+#     Trebuchet
 
 PRODUCT_PACKAGE_OVERLAYS += \
     vendor/eliza/overlays
