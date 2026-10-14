@@ -2,6 +2,7 @@
 import { readFile } from "node:fs/promises";
 import {
   installBillingCommandEvidenceTestColumns,
+  installPilotAllowanceTestSchema,
   installSubscriptionGrantTestSchema,
 } from "../../testing";
 
@@ -63,4 +64,5 @@ export async function applyAppBillingTestMigrations(
   await execute(column.replace("ADD COLUMN", "ADD COLUMN IF NOT EXISTS"));
   await installBillingCommandEvidenceTestColumns(execute);
   await installSubscriptionGrantTestSchema(execute);
+  await installPilotAllowanceTestSchema(execute);
 }

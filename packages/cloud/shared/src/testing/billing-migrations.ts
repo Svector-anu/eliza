@@ -88,3 +88,29 @@ export async function installSubscriptionGrantTestSchema(
     `DO $install_grants$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = current_schema() AND c.relname = 'subscription_grants') THEN ${statements.join("\n")} END IF; END $install_grants$`,
   );
 }
+
+/**
+ * Installs the pilot redemption tables (0541) and the pilot allowance
+ * columns and tables (0543) once in a fixture built from selected billing
+ * migrations, so Drizzle reads of subscription_allowance_periods see the
+ * production column set.
+ */
+export async function installPilotAllowanceTestSchema(
+  execute: (statement: string) => Promise<unknown>,
+): Promise<void> {
+  const statements: string[] = [];
+  for (const tag of ["0541_app_pilot_redemptions", "0543_app_pilot_allowance"]) {
+    const migration = await readFile(
+      new URL(`../db/migrations/${tag}.sql`, import.meta.url),
+      "utf8",
+    );
+    for (const statement of migration.split("--> statement-breakpoint")) {
+      const trimmed = statement.trim();
+      if (trimmed) statements.push(`EXECUTE $pilot_statement$${trimmed}$pilot_statement$;`);
+    }
+  }
+  await execute(
+    // Same current-schema guard as the subscription-grant install above.
+    `DO $install_pilot$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = current_schema() AND c.relname = 'app_pilot_redemptions') THEN ${statements.join("\n")} END IF; END $install_pilot$`,
+  );
+}
