@@ -174,6 +174,7 @@ describe.skipIf(!postgresUrl)("generic purchaser runtime with PostgreSQL and Str
       "0470_app_billing_cancellation_evidence",
       "0471_app_billing_checkout_cleanup_receipts",
       "0472_app_billing_checkout_cleanup_evidence",
+      "0542_subscription_grant_codes",
     ]) {
       const migration = await readFile(
         new URL(`../../db/migrations/${tag}.sql`, import.meta.url),
